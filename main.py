@@ -38,7 +38,10 @@ class ApplicationWindow(QtWidgets.QMainWindow):
              print('by')
          
 
-            
+            im = Image.open("armand.jpg")
+            enhancer = ImageEnhance.Brightness(im)
+            enhanced_im = enhancer.enhance(3.8)
+            enhanced_im.save("enhanced.armand.jpg")
 from __future__ import division
 import numpy as np
 import cv2
