@@ -7,11 +7,17 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+from PIL import Image, ImageEnhance 
+from PyQt5.QtWidgets import QFileDialog
+import numpy as np
+import cv2
+import sys
+from PyQt5.QtGui import QPixmap , QImage
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1127, 903)
+    
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.centralwidget)
@@ -98,11 +104,28 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         self.T2.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        
+    #def Browse_clicked2 (self) :
+       # myImage = cv2.imread("armand.jpg", cv2.IMREAD_GRAYSCALE)
+       # height, width = myImage.shape
+       #qImg = QImage(myImage.data, width, height, QImage.Format_Grayscale8).rgbSwapped())
+       #pixmap = QPixmap.fromImage(qImg)
+      # self.ui.showphatom.setPixmap(QPixmap.fromImage(qI))
+    #def mouseMoveEvent(self, event):
+        #if event.buttons() == QtCore.Qt.LeftButton:
+          # im = Image.open("armand.jpg")
+          # enhancer = ImageEnhance.Brightness(im)
+          # enhanced_im = enhancer.enhance(3.8)
+       # elif event.buttons() == QtCore.Qt.RightButton:
+          # im = Image.open("armand.jpg")
+           #enhancer = ImageEnhance.Brightness(im)
+           #enhanced_im = enhancer.enhance(3.8)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.showphantom.setText(_translate("MainWindow", "TextLabel"))
+        self.showphantom.setMouseTracking(True)
         self.Browse.setText(_translate("MainWindow", "Browse"))
         self.label_4.setText(_translate("MainWindow", "    T1"))
         self.label_3.setText(_translate("MainWindow", "        TE"))
@@ -116,7 +139,6 @@ class Ui_MainWindow(object):
 
 
 if __name__ == "__main__":
-    import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
