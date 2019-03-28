@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1271</width>
+    <width>1276</width>
     <height>846</height>
    </rect>
   </property>
@@ -118,8 +118,8 @@
       </property>
       <property name="maximumSize">
        <size>
-        <width>425</width>
-        <height>721</height>
+        <width>512</width>
+        <height>512</height>
        </size>
       </property>
       <property name="currentIndex">
@@ -268,8 +268,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1271</width>
-     <height>21</height>
+     <width>1276</width>
+     <height>26</height>
     </rect>
    </property>
   </widget>
