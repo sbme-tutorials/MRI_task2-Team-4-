@@ -197,7 +197,7 @@ def createT1(intensity):
 
 
     
-img = phantom(n=512) #d5aly fel n el shape bta3 el phantom bta3k "el resolution ya3ny" ana hena med5al 512, momkn ted5aly 64
+img = phantom(n=512) 
 
 T1 = np.zeros((img.shape[0],img.shape[1]))
 T2= np.zeros((img.shape[0],img.shape[1]))
