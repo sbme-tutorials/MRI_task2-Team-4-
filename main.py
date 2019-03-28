@@ -6,7 +6,7 @@ This is a temporary script file.
 """
 
 
-from phantom_gui import Ui_MainWindow
+from lastgui import Ui_MainWindow
 import sys
 import math
 from math import exp, cos, sin, pi, sqrt
@@ -51,7 +51,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.ui.TE.editingFinished.connect(self.Kspace)
         self.ui.TR.editingFinished.connect(self.Kspace)
         self.ui.flipangle.editingFinished.connect(self.Kspace)
-        self.ui.setScaledContents(True)
+
       
         
     def Browse_clicked(self):
