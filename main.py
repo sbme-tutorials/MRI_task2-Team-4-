@@ -51,7 +51,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.ui.TE.editingFinished.connect(self.Kspace)
         self.ui.TR.editingFinished.connect(self.Kspace)
         self.ui.flipangle.editingFinished.connect(self.Kspace)
-
+        self.ui.setScaledContents(True)
       
         
     def Browse_clicked(self):
