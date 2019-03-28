@@ -1,8 +1,7 @@
-
 from PyQt5 import QtWidgets, QtCore, QtGui
 from first import Ui_Form
 from PyQt5.QtWidgets import QFileDialog, QLabel, QComboBox
-from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtGui import QPixmap, QImage,QPainter*
 import sys
 import cv2
 import numpy as np
@@ -22,10 +21,15 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
 
     def browse_clicked(self):
-        fileName, _filter = QFileDialog.getOpenFileName(self, "Title", "Default File", "All Files (*);;Image Files (*.png)")
-        if fileName:
-            self.myImg = cv2.imread(fileName)
-
+        filename, _filter = QFileDialog.getOpenFileName(self, "Title", "Default File", "All Files (*);;Image Files (*.png)")
+        if filename:
+            All =np.load(filename)
+            PD=All[0]
+            T1=All[1]
+            T2=All[2]            
+            rectangle = QRectF(self.x,self.y, 2.0, 2.0)
+            painter = QPainter(self)
+            painter.drawRect(rectangle)
             pixmap = QPixmap(fileName)
             pixmap = pixmap.scaled(int(pixmap.height()), int(pixmap.width()), QtCore.Qt.KeepAspectRatio)
             self.ui.image.setScaledContents(True)
@@ -35,10 +39,10 @@ class ApplicationWindow(QtWidgets.QMainWindow):
             
 
     def getPos(self , event):
-        x = event.pos().x()
-        y = event.pos().y() 
+        self.x = event.pos().x()
+        self.y = event.pos().y() 
         print("x = %d, y = %d" % (x,y))
-        px = self.myImg[x,y]
+        px = self.PD[x,y]
         print (px)
 
     def choose(self):
