@@ -6,7 +6,7 @@ This is a temporary script file.
 """
 
 
-from lastgui import Ui_MainWindow
+from bgrb import Ui_MainWindow
 import sys
 import math
 from math import exp, cos, sin, pi, sqrt
@@ -51,9 +51,10 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.ui.TE.editingFinished.connect(self.Kspace)
         self.ui.TR.editingFinished.connect(self.Kspace)
         self.ui.flipangle.editingFinished.connect(self.Kspace)
-
-      
-        
+        self.ui.tabWidget.setCurrentIndex(0)
+        self.pen=[QtGui.QPen(QtCore.Qt.green),QtGui.QPen(QtCore.Qt.red),QtGui.QPen(QtCore.Qt.yellow),QtGui.QPen(QtCore.Qt.blue)]
+        self.Pen1=[pg.mkPen('g'),pg.mkPen('r'),pg.mkPen('y'),pg.mkPen('b')]
+        self.counter=-1
     def Browse_clicked(self):
        self.fileName,_ = QFileDialog.getOpenFileName(self," "," ", "All Files (*) ;; Python Files (*.jpg)")
        if self.fileName:
@@ -95,13 +96,16 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 # Get the pixel coordinates
 
     def getClick(self, event):
+        #contrast
         if event.button() == Qt.LeftButton:
             self.left = True
             self.right = False
         if event.button() == Qt.RightButton:
             self.right = True
             self.left = False
+           #Graph Painter 
         if event.button() == Qt.LeftButton:
+            self.counter += 1
             x = event.pos().x()
             y = event.pos().y() 
             print("x = %d, y = %d" % (x,y))
@@ -110,16 +114,25 @@ class ApplicationWindow(QtWidgets.QMainWindow):
             x1 = math.floor(x1)
             y1 = math.floor(y1)
             self.ui.showphantom.paint = True
-            self.ui.showphantom.point.append([x,y])
+            self.ui.showphantom.point.append([x,y ,self.pen[self.counter]])
             t = np.arange (0. , 500. ,1.)
             Mx = np.exp(-t /self.T2[x1][y1])
             Mz = 1-np.exp(-t/self.T1[x1][y1])
-            self.ui.t1.plot(t , np.ravel(Mx) )
-            self.ui.t2.plot(t , np.ravel(Mz) )
+            self.ui.t1.plot(t , np.ravel(Mx),pen=self.Pen1[self.counter])
+            self.ui.t2.plot(t , np.ravel(Mz),pen=self.Pen1[self.counter])
+            self.TRline=self.TRline/500 
+            self.TEline=self.TEline/500 
+            self.ui.t1.addLine(x=self.TRline,pen='b')
+            self.ui.t1.addLine(x=self.TEline,pen='r')
+            self.ui.t2.addLine(x=self.TRline,pen='b')
+            self.ui.t2.addLine(x=self.TEline,pen='r')       
+
+
         if event.button() == Qt.RightButton:
             self.ui.showphantom.point = []
             self.ui.t1.clear()
             self.ui.t2.clear()
+            self.counter=-1
 
 
     def choose(self):
@@ -162,8 +175,10 @@ class ApplicationWindow(QtWidgets.QMainWindow):
                 print(phSize)
                 TR=int(self.ui.TR.text())
                 print(TR)
+                self.TRline = TR 
                 TE=int(self.ui.TE.text())
                 print(TE)
+                self.TEline = TE 
                 theta=int(self.ui.flipangle.text())               
                 print(theta)
                 theta=(theta*pi)/180
@@ -201,9 +216,10 @@ class ApplicationWindow(QtWidgets.QMainWindow):
                 Kspace1=abs(Kspace)
                 imsave("Kspace.png", Kspace1)
                 ks = QtGui.QPixmap("Kspace.png")
-                ks=ks.scaled(512,512)
+                ks=ks.scaled(300,200)
                 pixmap = QtGui.QPixmap("phantom.png")
-                pixmap=pixmap.scaled(512,512)
+                pixmap = pixmap.scaled(132, 200, QtCore.Qt.KeepAspectRatio)
+               # pixmap=pixmap.scaled(512,512)
                  #self.ui.show_phantom.setScaledContents(True)
                 self.ui.constImage.setPixmap(pixmap)
               #  self.ui.constImage.setPixmap(pixmap)
@@ -225,15 +241,102 @@ class ApplicationWindow(QtWidgets.QMainWindow):
             if self.size == '3':
                 pixmap = pixmap.scaled(3,3)
                 self.ui.showphantom.setPixmap(pixmap)# -*- coding: utf-8 -*-
+    def Shep(self):
+        def phantom (n = 256, p_type = 'Modified Shepp-Logan', ellipses = None):
+        
+        
+                if (ellipses is None):
+                        ellipses = _select_phantom (p_type)
+                elif (np.size (ellipses, 1) != 6):
+                        raise AssertionError ("Wrong number of columns in user phantom")
+        
+                # Blank image
+                p = np.zeros ((n, n))
+        
+                # Create the pixel grid
+                ygrid, xgrid = np.mgrid[-1:1:(1j*n), -1:1:(1j*n)]
+        
+                for ellip in ellipses:
+                        I   = ellip [0]
+                        a2  = ellip [1]**2
+                        b2  = ellip [2]**2
+                        x0  = ellip [3]
+                        y0  = ellip [4]
+                        phi = ellip [5] * np.pi / 180  # Rotation angle in radians
+        
+                        # Create the offset x and y values for the grid
+                        x = xgrid - x0
+                        y = ygrid - y0
+        
+                        cos_p = np.cos (phi)
+                        sin_p = np.sin (phi)
+        
+                        # Find the pixels within the ellipse
+                        locs = (((x * cos_p + y * sin_p)**2) / a2
+                      + ((y * cos_p - x * sin_p)**2) / b2) <= 1
+        
+                        # Add the ellipse intensity to those pixels
+                        p [locs] += I
+        
+                return p
+        
+        
+        def _select_phantom (name):
+                if (name.lower () == 'shepp-logan'):
+                        e = _shepp_logan ()
+                elif (name.lower () == 'modified shepp-logan'):
+                        e = _mod_shepp_logan ()
+                else:
+                        raise ValueError ("Unknown phantom type: %s" % name)
+        
+                return e
+        
+        
+        def _shepp_logan ():
+                #  Standard head phantom, taken from Shepp & Logan
+                return [[   2,   .69,   .92,    0,      0,   0],
+                        [-.98, .6624, .8740,    0, -.0184,   0],
+                        [-.02, .1100, .3100,  .22,      0, -18],
+                        [-.02, .1600, .4100, -.22,      0,  18],
+                        [ .01, .2100, .2500,    0,    .35,   0],
+                        [ .01, .0460, .0460,    0,     .1,   0],
+                        [ .02, .0460, .0460,    0,    -.1,   0],
+                        [ .01, .0460, .0230, -.08,  -.605,   0],
+                        [ .01, .0230, .0230,    0,  -.606,   0],
+                        [ .01, .0230, .0460,  .06,  -.605,   0]]
+        
+        def _mod_shepp_logan ():
+                #  Modified version of Shepp & Logan's head phantom,
+                #  adjusted to improve contrast.  Taken from Toft.
+                return [[   1,   .69,   .92,    0,      0,   0],
+                        [-.80, .6624, .8740,    0, -.0184,   0],
+                        [-.20, .1100, .3100,  .22,      0, -18],
+                        [-.20, .1600, .4100, -.22,      0,  18],
+                        [ .10, .2100, .2500,    0,    .35,   0],
+                        [ .10, .0460, .0460,    0,     .1,   0],
+                        [ .10, .0460, .0460,    0,    -.1,   0],
+                        [ .10, .0460, .0230, -.08,  -.605,   0],
+                        [ .10, .0230, .0230,    0,  -.606,   0],
+                        [ .10, .0230, .0460,  .06,  -.605,   0]]
+        P = phantom ()
+        imsave("sheplogen.png",P)
+        
+        import os
+        def load_lena():
+            try:
+                import scipy.misc
+                l = scipy.misc.lena()
+            except: # lena has been removed from scipy
+                fname = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data/lena.npz")
+                f = np.load(fname)
+                l = f['data']
+                f.close()
+            return l.astype(np.float32)
+     
 
 
 
 
-#
-#    def gettext(self, event):
-#        self.flipangle1 = str(self.ui.flipangle.text())
-#        self.TE = str(self.ui.TE.text())
-#        self.TR = str(self.ui.TR.text())
  
 
 def main():

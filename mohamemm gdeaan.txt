@@ -1,0 +1,21 @@
+7ot **showphantom=Lable()** badal showphantom=QWidget.QLable() 
+w zwed al goz2 dah t7t 
+
+class Label(QtWidgets.QLabel):
+    def __init__(self, parent=None):
+        super(Label, self).__init__(parent=parent)
+        self.paint = False
+        self.paint1 = False
+        self.x = 0
+        self.y = 0
+        self.count = 0
+        self.point = []
+        self.pixel = []
+    def paintEvent(self, e):
+        super().paintEvent(e)
+        painter = QtGui.QPainter(self)
+        painter.setRenderHint(QtGui.QPainter.Antialiasing)
+        #if self.paint:
+        for self.pixel in self.point:
+            painter.setPen(self.pixel[2])
+            painter.drawRect(self.pixel[0], self.pixel[1], 8, 8)
