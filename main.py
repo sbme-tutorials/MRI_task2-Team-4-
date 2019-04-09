@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 """
 Spyder Editor
@@ -30,16 +31,17 @@ import pyqtgraph as pg
 
 class ApplicationWindow(QtWidgets.QMainWindow):
     global myImg
-    
+
     def __init__(self):
         super(ApplicationWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        
+
         self.ui.Browse.clicked.connect(self.Browse_clicked)
         self.ui.showphantom.setMouseTracking(False)
         self.ui.comboBox.currentIndexChanged.connect(self.choose)
         self.ui.comboBox_2.currentIndexChanged.connect(self.choose_2)
+        
         self.brit = 0
         self.points = QtGui.QPolygon()  #ae al points deh
         self.estna = False
@@ -53,46 +55,49 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.ui.TR.editingFinished.connect(self.Kspace)
         self.ui.flipangle.editingFinished.connect(self.Kspace)
         self.ui.tabWidget.setCurrentIndex(0)
-        
+
         self.pen=[QtGui.QPen(QtCore.Qt.green),QtGui.QPen(QtCore.Qt.red),QtGui.QPen(QtCore.Qt.yellow),QtGui.QPen(QtCore.Qt.blue)]
         self.Pen1=[pg.mkPen('g'),pg.mkPen('r'),pg.mkPen('y'),pg.mkPen('b')]
         self.counter=-1
-        
-        
+
+
     def Browse_clicked(self):
+        
        self.fileName,_ = QFileDialog.getOpenFileName(self," "," ", "All Files (*) ;; Python Files (*.jpg)")
        if self.fileName:
          All =np.load(self.fileName)
          PD=All[0]
          self.T1=All[1]
          self.T2=All[2]
-         
+        
+
+
          imsave("Pd.png", PD)
          imsave("T1.png", self.T1)
          imsave("T2.png", self.T2)
-         
+
          self.myImage = cv2.imread("Pd.png" , cv2.IMREAD_GRAYSCALE)
-         
+
          self.fileName0 = "Pd.png"
          self.fileName1 = "T1.png"
          self.fileName2 = "T2.png"
-         
+
          self.height, self.width = self.myImage.shape
-         
+
          self.pixmap = QtGui.QPixmap(self.fileName0)
-         
+
          self.ui.showphantom.setScaledContents(True)
          self.ui.showphantom.setMouseTracking(False)
-         
+
          self.ui.showphantom.mouseMoveEvent = self.changeBrit
-         self.ui.showphantom.mousePressEvent = self.getClick
-         
+         self.ui.showphantom.mouseDoubleClickEvent = self.getClick
+
          self.ui.comboBox.currentIndexChanged.connect(self.choose)
          self.ui.comboBox_2.currentIndexChanged.connect(self.choose_2)
-         
+
          self.estna = True
          self.Kspace()
-    
+
     def mousePressEvent(self, e):
         self.points << e.pos()
         self.update()
@@ -108,36 +113,37 @@ class ApplicationWindow(QtWidgets.QMainWindow):
             self.right = True
             self.left = False
            #Graph Painter 
-           
+
         if event.button() == Qt.LeftButton:
             self.counter += 1
             x = event.pos().x()
             y = event.pos().y() 
+       
             print("x = %d, y = %d" % (x,y))
-            
             x1 = x * (self.myImage.shape[0]/512)
             y1 = y * (self.myImage.shape[0]/512)
-            
-           
-                
-            x1 = math.floor(x1)
-            y1 = math.floor(y1)
+
+
+
+            x1 = round(x1)
+            y1 = round(y1)
             print("x = %d, y = %d" % (x1,y1))
-            
-            
+
+
             self.ui.showphantom.paint = True
             self.ui.showphantom.point.append([x,y ,self.pen[self.counter]])
-            
+
             t = np.arange (0. , 500. ,1.)
             Mx = np.exp(-t /self.T2[x1][y1])
+            print(self.T2[x1][y1])
             Mz = 1-np.exp(-t/self.T1[x1][y1])
-            
+
             self.ui.t1.plot(t , np.ravel(Mx),pen=self.Pen1[self.counter])
             self.ui.t2.plot(t , np.ravel(Mz),pen=self.Pen1[self.counter])
-            
+
             self.TRline=self.TRline/50 
             self.TEline=self.TEline/50 
-            
+
             self.ui.t1.addLine(x=self.TRline,pen='b')
             self.ui.t1.addLine(x=self.TEline,pen='r')
             self.ui.t2.addLine(x=self.TRline,pen='b')
@@ -159,12 +165,12 @@ class ApplicationWindow(QtWidgets.QMainWindow):
                 self.pixmap = QtGui.QPixmap(self.fileName1)
         if self.state == 'T2':
                 self.pixmap = QtGui.QPixmap(self.fileName2)
-       
+
 
 
     def choose_2 (self) :
         self.size = self.ui.comboBox_2.currentText()
-     
+
     def paintEvent(self, event):
         if self.estna:
             pixmap = self.pixmap
@@ -198,10 +204,10 @@ class ApplicationWindow(QtWidgets.QMainWindow):
            enhanced_im.save('enhanced_pic.jpg')
            fileName1 = "enhanced_pic.jpg"
            self.pixmap = QtGui.QPixmap(fileName1)
-    
-            
+
+
     def Kspace(self):
-        
+
                 phSize=self.height
                 print(phSize)
                 TR=int(self.ui.TR.text())
@@ -210,7 +216,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
                 TE=int(self.ui.TE.text())
                 print(TE)
                 self.TEline = TE 
-                theta=int(self.ui.flipangle.text())               
+                theta=int(self.ui.flipangle.text())              
                 print(theta)
                 theta=(theta*pi)/180
                 Signal=np.zeros((phSize,phSize,3))
@@ -224,7 +230,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
                         for m in range(phSize):
                             Signal[k][m]=np.matmul(RX,Signal[k][m])  #3*1
                             Decay=np.array([[exp(-TE/self.T2[k][m]),0,0],[0,exp(-TE/self.T2[k][m]),0],[0,0,exp(-TE/self.T1[k][m])]]) #3*3
-                            Signal[k][m]=np.matmul(Decay,Signal[k][m])  #3*1                        
+                            Signal[k][m]=np.matmul(Decay,Signal[k][m])  #3*1                       
                     for j in range(phSize):
                          Gy=(j/phSize)*(2*pi) #multi in cols
                          Gx= (i/phSize)*(2*pi) # *rows
@@ -240,7 +246,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
                     for k in range(phSize):
                         for m in range (phSize):                    #print(Kspace)
                             Signal[k][m][2]=(1-exp(-TR/self.T1[k][m]))
-                
+
                 Phantom=np.fft.fft2(Kspace)
                 Phantom1=abs(Phantom)
                 imsave("phantom.png", Phantom1)
@@ -254,9 +260,9 @@ class ApplicationWindow(QtWidgets.QMainWindow):
                 self.ui.kspace.setPixmap(ks)
 
 
-   
-               
- 
+
+
+
 
 def main():
      app = QtWidgets.QApplication(sys.argv)
@@ -266,4 +272,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()        
+    main()
