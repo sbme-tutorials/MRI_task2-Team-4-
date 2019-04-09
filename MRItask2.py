@@ -63,7 +63,7 @@ class Ui_MainWindow(object):
         self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.showphantom = QtWidgets.QLabel(self.verticalLayoutWidget)
+        self.showphantom = Label(self.verticalLayoutWidget)
         self.showphantom.setObjectName("showphantom")
         self.verticalLayout.addWidget(self.showphantom)
         self.label_2 = QtWidgets.QLabel(self.verticalLayoutWidget)
@@ -152,3 +152,21 @@ class Ui_MainWindow(object):
         self.label_5.setText(_translate("MainWindow", "TR"))
 
 from pyqtgraph import PlotWidget
+class Label(QtWidgets.QLabel):
+    def __init__(self, parent=None):
+        super(Label, self).__init__(parent=parent)
+        self.paint = False
+        self.paint1 = False
+        self.x = 0
+        self.y = 0
+        self.count = 0
+        self.point = []
+        self.pixel = []
+    def paintEvent(self, e):
+        super().paintEvent(e)
+        painter = QtGui.QPainter(self)
+        painter.setRenderHint(QtGui.QPainter.Antialiasing)
+        #if self.paint:
+        for self.pixel in self.point:
+            painter.setPen(self.pixel[2])
+            painter.drawRect(self.pixel[0], self.pixel[1], 8, 8)
