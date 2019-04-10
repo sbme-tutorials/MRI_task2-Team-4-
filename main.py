@@ -16,7 +16,7 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtGui import QPixmap, QImage,QMouseEvent
 from PyQt5.QtWidgets import QWidget, QMainWindow, QApplication, QFileDialog
 from PyQt5.QtGui import QImage, QColor, QBrush, QPainter, QPen, QDragEnterEvent
 from PyQt5.QtCore import Qt
@@ -88,6 +88,8 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
          self.ui.showphantom.setScaledContents(True)
          self.ui.showphantom.setMouseTracking(False)
+         self.ui.constImage.setScaledContents(True)
+         self.ui.kspace.setScaledContents(True)
 
          self.ui.showphantom.mouseMoveEvent = self.changeBrit
          self.ui.showphantom.mouseDoubleClickEvent = self.getClick
@@ -97,13 +99,67 @@ class ApplicationWindow(QtWidgets.QMainWindow):
 
          self.estna = True
          self.Kspace()
-
+         self.plot()
     def mousePressEvent(self, e):
         self.points << e.pos()
         self.update()
 
 # Get the pixel coordinates
+    def eventFilter (self,source,event):
+            
+            if event.type() == event.MouseButtonPress and QMouseEvent.button(event) == Qt.LeftButton:
+                self.counter += 1
+                self.x = event.pos().x()
+                self.y = event.pos().y()
+                
+                self.label_width=self.ui.showphantom.geometry().width()
+                self.label_height=self.ui.showphantom.geometry().height()
+    
+                self.scaled_x=self.label_width/self.height
+                self.scaled_y=self.label_height/self.height
+                
+                
+                self.x1=math.floor((self.x/self.label_width)*self.height)
+                self.y1=math.floor((self.y/self.label_height)*self.height)
+                
+                self.plot()
+                
+            if event.type() == event.Resize:
+                
+                self.NH= self.ui.showphantom.geometry().height()      
+                self.NW= self.ui.showphantom.geometry().width()
+                
+                self.scaled_x=self.NW/self.label_width
+                self.scaled_y=self.NH/self.label_height
+    
+    
+                self.ui.showphantom.point = []
+                
+                
+                if  self.point1x != 0 and  self.point1y != 0:
+                    self.point1x_s=self.point1x*self.scaled_x
+                    self.point1y_s=self.point1y*self.scaled_y
+                    
+                    self.ui.showphantom.point.append([self.point1x_s ,self.point1y_s,QtCore.Qt.green])
+    
+                    
+                if  self.point1x != 0 and  self.point1y != 0:
+                    self.point2x_s=self.point2x*self.scaled_x
+                    self.point2y_s=self.point2y*self.scaled_y
+                    self.ui.showphantom.point.append([self.point2x_s ,self.point2y_s,QtCore.Qt.red])
+                
+                if  self.point1x != 0 and  self.point1y != 0:
+                    self.point3x_s=self.point3x*self.scaled_x
+                    self.point3y_s=self.point3y*self.scaled_y
+                    self.ui.showphantom.point.append([self.point3x_s ,self.point3y_s,QtCore.Qt.yellow])
+                
+                if  self.point1x != 0 and  self.point1y != 0:
+                    self.point4x_s=self.point4x*self.scaled_x
+                    self.point4y_s=self.point4y*self.scaled_y
+                    self.ui.showphantom.point.append([self.point4x_s ,self.point4y_s,QtCore.Qt.blue])
 
+                
+         
     def getClick(self, event):
         #contrast
         if event.button() == Qt.LeftButton:
@@ -114,48 +170,52 @@ class ApplicationWindow(QtWidgets.QMainWindow):
             self.left = False
            #Graph Painter 
 
-        if event.button() == Qt.LeftButton:
-            self.counter += 1
-            x = event.pos().x()
-            y = event.pos().y() 
        
-            print("x = %d, y = %d" % (x,y))
-            x1 = x * (self.myImage.shape[0]/512)
-            y1 = y * (self.myImage.shape[0]/512)
-
-
-
-            x1 = round(x1)
-            y1 = round(y1)
-            print("x = %d, y = %d" % (x1,y1))
-
-
-            self.ui.showphantom.paint = True
-            self.ui.showphantom.point.append([x,y ,self.pen[self.counter]])
-
-            t = np.arange (0. , 500. ,1.)
-            Mx = np.exp(-t /self.T2[x1][y1])
-            print(self.T2[x1][y1])
-            Mz = 1-np.exp(-t/self.T1[x1][y1])
-
-            self.ui.t1.plot(t , np.ravel(Mx),pen=self.Pen1[self.counter])
-            self.ui.t2.plot(t , np.ravel(Mz),pen=self.Pen1[self.counter])
-
-            self.TRline=self.TRline/50 
-            self.TEline=self.TEline/50 
-
-            self.ui.t1.addLine(x=self.TRline,pen='b')
-            self.ui.t1.addLine(x=self.TEline,pen='r')
-            self.ui.t2.addLine(x=self.TRline,pen='b')
-            self.ui.t2.addLine(x=self.TEline,pen='r')       
-
 
         if event.button() == Qt.RightButton:            
             self.ui.showphantom.point = []
             self.ui.t1.clear()
             self.ui.t2.clear()
             self.counter=-1
+            self.point1x=0
+            self.point2x=0
+            self.point3x=0
+            self.point4x=0
+            self.point1y=0
+            self.point2y=0
+            self.point3y=0
+            self.point4y=0
 
+
+    def plot(self):
+             
+            if self.counter== 0 :
+                self.point1x=self.x
+                self.point1y=self.y
+                
+            if self.counter== 1 :
+                self.point2x=self.x
+                self.point2y=self.y
+               
+            if self.counter== 2 :
+                self.point3x=self.x
+                self.point3y=self.y
+        
+            if self.counter== 3 :
+                self.point4x=self.x
+                self.point4y=self.y
+                
+                
+            self.ui.showphantom.point.append([ self.x, self.y,self.pen[self.counter]])
+
+    
+            
+            t = np.arange (0. , 500. ,1.)
+            Mx = np.exp(-t /self.T2[self.x1][self.y1])
+            Mz = 1-np.exp(-t/self.T1[self.x1][self.y1])
+            
+            self.ui.t1.plot(t ,np.ravel(Mx),pen=self.Pen1[self.counter])
+            self.ui.t2.plot(t ,np.ravel(Mz),pen=self.Pen1[self.counter])
 
     def choose(self):
         self.state = self.ui.comboBox.currentText()
