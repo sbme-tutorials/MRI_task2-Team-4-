@@ -165,3 +165,4 @@ class Label(QtWidgets.QLabel):
         for self.pixel in self.point:
             painter.setPen(self.pixel[2])
             painter.drawRect(self.pixel[0], self.pixel[1], 8, 8)
+            

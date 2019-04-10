@@ -45,7 +45,8 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.estna = False
         self.size = "64"
         self.state = "PD"
-        
+        self.label_height= self.ui.showphantom.geometry().height()      
+        self.label_width= self.ui.showphantom.geometry().width()
         self.ui.TE.clear()
         self.ui.TR.clear()
         self.ui.flipangle.clear()
@@ -53,7 +54,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.ui.TR.editingFinished.connect(self.Kspace)
         self.ui.flipangle.editingFinished.connect(self.Kspace)
         self.ui.tabWidget.setCurrentIndex(0)
-        
+        self.ui.showphantom.installEventFilter(self)
         self.pen=[QtGui.QPen(QtCore.Qt.green),QtGui.QPen(QtCore.Qt.red),QtGui.QPen(QtCore.Qt.yellow),QtGui.QPen(QtCore.Qt.blue)]
         self.Pen1=[pg.mkPen('g'),pg.mkPen('r'),pg.mkPen('y'),pg.mkPen('b')]
         self.counter=-1
@@ -90,6 +91,10 @@ class ApplicationWindow(QtWidgets.QMainWindow):
          self.ui.comboBox.currentIndexChanged.connect(self.choose)
          self.ui.comboBox_2.currentIndexChanged.connect(self.choose_2)
          
+         self.label_height= self.ui.showphantom.geometry().height()      
+         self.label_width= self.ui.showphantom.geometry().width()
+         
+         
          self.estna = True
          self.Kspace()
     
@@ -97,8 +102,40 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.points << e.pos()
         self.update()
 
-# Get the pixel coordinates
+    def eventFilter (self,source,event):
+         if event.type() == event.Resize:
+            
+            
+            self.NH= self.ui.showphantom.geometry().height()      
+            self.NW= self.ui.showphantom.geometry().width()
+            
+            self.scaled_x=self.label_width/self.NW
+            self.scaled_y=self.label_height/self.NH
+            
+            self.ui.showphantom.point = []
+               
+            
+            self.point1x=self.point1x/self.scaled_x
+            self.point1y=self.point1y/self.scaled_y
+            self.ui.showphantom.point.append([self.point1x ,self.point1y,self.pen[self.counter]])
 
+            
+            self.point2x=self.point2x/self.scaled_x
+            self.point2y=self.point2y/self.scaled_y
+            self.ui.showphantom.point.append([self.point2x ,self.point2y,self.pen[self.counter]])
+            
+            
+            self.point3x=self.point3x/self.scaled_x
+            self.point3y=self.point3y/self.scaled_y
+            self.ui.showphantom.point.append([self.point3x ,self.point3y,self.pen[self.counter]])
+            
+            
+            self.point4x=self.point4x/self.scaled_x
+            self.point4y=self.point4y/self.scaled_y
+            self.ui.showphantom.point.append([self.point4x ,self.point4y,self.pen[self.counter]])
+
+                
+         
     def getClick(self, event):
         #contrast
         if event.button() == Qt.LeftButton:
@@ -107,33 +144,52 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         if event.button() == Qt.RightButton:
             self.right = True
             self.left = False
-           #Graph Painter 
-           
+            
+       
+                 #Graph Painter
         if event.button() == Qt.LeftButton:
             self.counter += 1
-            x = event.pos().x()
-            y = event.pos().y() 
-            print("x = %d, y = %d" % (x,y))
+            self.x = event.pos().x()
+            self.y = event.pos().y()
+            self.x=math.floor(self.x/self.label_width)
+            self.y=math.floor(self.y/self.label_height)
             
-            x1 = x * (self.myImage.shape[0]/512)
-            y1 = y * (self.myImage.shape[0]/512)
-            
-           
+            if self.counter== 0 :
+                self.point1x=self.x
+                self.point1y=self.y
+                self.x1 = math.floor(self.point1x /self.label_width)
+                self.y1 =  math.floor(self.point1y/self.label_height)
+                self.ui.showphantom.point.append([ self.x1, self.y1 ,self.pen[self.counter]])
+
                 
-            x1 = math.floor(x1)
-            y1 = math.floor(y1)
-            print("x = %d, y = %d" % (x1,y1))
-            
-            
-            self.ui.showphantom.paint = True
-            self.ui.showphantom.point.append([x,y ,self.pen[self.counter]])
+            if self.counter== 1 :
+                self.point2x=self.x
+                self.point2y=self.y
+                self.x1 = math.floor(self.point2x /self.label_width)
+                self.y1 = math.floor(self.point2y/self.label_height)
+                self.ui.showphantom.point.append([ self.x1, self.y1 ,self.pen[self.counter]])
+                
+            if self.counter== 2 :
+                self.point3x=self.x
+                self.point3y=self.y
+                self.x1 = math.floor(self.point3x /self.label_width)
+                self.y1 =  math.floor(self.point3y/self.label_height)
+                self.ui.showphantom.point.append([ self.x1, self.y1 ,self.pen[self.counter]])
+            if self.counter== 3 :
+                self.point4x=self.x
+                self.point4y=self.y
+                self.x1 = math.floor(self.point4x /self.label_width)
+                self.y1 =  math.floor(self.point4y/self.label_height)
+                self.ui.showphantom.point.append([ self.x1, self.y1 ,self.pen[self.counter]])
+        
+    
             
             t = np.arange (0. , 500. ,1.)
-            Mx = np.exp(-t /self.T2[x1][y1])
-            Mz = 1-np.exp(-t/self.T1[x1][y1])
+            Mx = np.exp(-t /self.T2[self.x1][self.y1])
+            Mz = 1-np.exp(-t/self.T1[self.x1][self.y1])
             
-            self.ui.t1.plot(t , np.ravel(Mx),pen=self.Pen1[self.counter])
-            self.ui.t2.plot(t , np.ravel(Mz),pen=self.Pen1[self.counter])
+            self.ui.t1.plot(t ,np.ravel(Mx),pen=self.Pen1[self.counter])
+            self.ui.t2.plot(t ,np.ravel(Mz),pen=self.Pen1[self.counter])
             
             self.TRline=self.TRline/50 
             self.TEline=self.TEline/50 
