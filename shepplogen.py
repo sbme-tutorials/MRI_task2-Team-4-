@@ -1,7 +1,7 @@
 import numpy as np
 import math
 from matplotlib import pyplot as plt
-from imageio import imsave, imread
+import cv2
 # a function that returns T1 ( recovery time ) based on the intensity
 #self.pixmap5 = QtGui.QPixmap(self.fileName4)
 #                self.ui.image.setPixmap(self.pixmap5)
@@ -149,7 +149,7 @@ def createT2(intensity):
         if intensity == 100: #Gray matter
                 T2 =170
         elif intensity == 255: #white matter       
-                T2 =150
+                T2 =190
         elif intensity == 200: #muscle        
                 T2 = 50
         elif intensity == 120 : #fat        
@@ -182,7 +182,7 @@ def createT1(intensity):
             T1=200
             
         elif intensity == 25: #protein
-            T1=255
+            T1=55
             
         elif intensity == 0: #Black => air
             T1=1
@@ -210,16 +210,17 @@ for i in range(img.shape[0]):
 
 
 
-
 plt.imshow(img, cmap="gray")
-imsave("phantom.png", img)
 plt.show()
+plt.axis('off')
 plt.imshow(T1, cmap="gray")
-imsave("T1.png", T1)
+plt.axis('off')
 plt.show()
 plt.imshow(T2, cmap="gray")
-imsave("T2.png", T2)
+plt.axis('off')
 plt.show()
+#plt.savefig('sheplagon.png')
+
 
 
 
