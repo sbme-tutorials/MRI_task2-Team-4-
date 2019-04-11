@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1134</width>
-    <height>710</height>
+    <width>1050</width>
+    <height>534</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,103 +21,7 @@
        <string>GroupBox</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
-       <item row="2" column="0">
-        <widget class="QPushButton" name="Browse">
-         <property name="text">
-          <string>Browse</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QComboBox" name="comboBox">
-         <item>
-          <property name="text">
-           <string>PD</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>T1</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>T2</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="2" column="2">
-        <widget class="QComboBox" name="comboBox_2">
-         <item>
-          <property name="text">
-           <string>128</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>64</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>32</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="2" column="4">
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-          <widget class="QLabel" name="label_6">
-           <property name="text">
-            <string>TE</string>
-           </property>
-           <property name="scaledContents">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-          <widget class="QLineEdit" name="TE"/>
-         </item>
-        </layout>
-       </item>
-       <item row="2" column="5">
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>TR</string>
-           </property>
-           <property name="scaledContents">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-          <widget class="QLineEdit" name="TR"/>
-         </item>
-        </layout>
-       </item>
-       <item row="2" column="6">
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
-         <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-          <widget class="QLabel" name="label_7">
-           <property name="text">
-            <string>flipangle</string>
-           </property>
-           <property name="scaledContents">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item alignment="Qt::AlignHCenter">
-          <widget class="QLineEdit" name="flipangle"/>
-         </item>
-        </layout>
-       </item>
-       <item row="3" column="0" colspan="7">
+       <item row="3" column="0" colspan="6">
         <widget class="QSplitter" name="splitter">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -204,19 +108,101 @@
          </widget>
         </widget>
        </item>
-       <item row="2" column="3">
-        <widget class="QComboBox" name="comboBox_3">
+       <item row="2" column="1">
+        <widget class="QComboBox" name="comboBox">
          <item>
           <property name="text">
-           <string>contrast</string>
+           <string>PD</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>pixelselect</string>
+           <string>T1</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>T2</string>
           </property>
          </item>
         </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QPushButton" name="Browse">
+         <property name="text">
+          <string>Browse</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QComboBox" name="comboBox_2">
+         <item>
+          <property name="text">
+           <string>128</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>64</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>32</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="2" column="4">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>TR</string>
+           </property>
+           <property name="scaledContents">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+          <widget class="QLineEdit" name="TR"/>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="5">
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+          <widget class="QLabel" name="label_7">
+           <property name="text">
+            <string>flipangle</string>
+           </property>
+           <property name="scaledContents">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item alignment="Qt::AlignHCenter">
+          <widget class="QLineEdit" name="flipangle"/>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="3">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+          <widget class="QLabel" name="label_6">
+           <property name="text">
+            <string>TE</string>
+           </property>
+           <property name="scaledContents">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+          <widget class="QLineEdit" name="TE"/>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -228,8 +214,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1134</width>
-     <height>26</height>
+     <width>1050</width>
+     <height>21</height>
     </rect>
    </property>
   </widget>
