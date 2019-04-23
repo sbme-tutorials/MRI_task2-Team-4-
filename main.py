@@ -25,7 +25,7 @@ import scipy.io as sio
 import io
 from time import sleep
 import pyqtgraph as pg
-import pyqtgraph.exporters
+#import pyqtgraph.exporters
 
 
 
