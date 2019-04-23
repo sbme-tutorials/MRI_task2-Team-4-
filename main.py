@@ -26,7 +26,6 @@ import io
 from time import sleep
 import pyqtgraph as pg
 import pyqtgraph.exporters
-import threading
 
 
 
@@ -114,6 +113,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
          self.estna = True
          self.Kspace()
          self.plot()
+         
     def mousePressEvent(self, e):
         self.points << e.pos()
         self.update()
@@ -187,6 +187,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
             self.ui.t1.clear()
             self.ui.t2.clear()
             self.counter=-1
+            
             self.point1x=0
             self.point2x=0
             self.point3x=0
@@ -281,7 +282,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
             
     def Kspace(self):
         
-                
+                self.width
 #                print(phSize)
                 TR=int(self.ui.TR.text())
 #                print(TR)
@@ -294,7 +295,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
                 theta=(theta*pi)/180
                 Signal=np.zeros((self.height,self.width,3))
                 Signal[0:self.height,0:self.width,0]=np.zeros((self.height,self.width))
-                Signal[0:self.height,0:self.width,1]=np.zeros((self.height,self.widht))
+                Signal[0:self.height,0:self.width,1]=np.zeros((self.height,self.width))
                 Signal[0:self.height,0:self.width,2]=np.ones((self.height,self.width)) 
                 Kspace=np.zeros((self.height,self.width),dtype=np.complex)
                 RX=np.array([[1,0,0],[0,cos(theta),sin(theta)],[0,-sin(theta),cos(theta)]])
@@ -323,9 +324,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
                     for k in range(self.height):
                         for m in range (self.width):                    #print(Kspace)
                             Signal[k][m][2]=(1-exp(-TR/self.T1[k][m]))
-                    QtGui.QApplication.processEvents()
-                QtGui.QApplication.processEvents() 
-                #kspace finished 
+                            #kspace finished 
                 
                 
                 # start to constrcted Phantom
@@ -341,6 +340,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
                 self.ui.constImage.setPixmap(pixmap)
                 self.ui.kspace.setPixmap(ks)
                 QtGui.QApplication.processEvents()
+                print('kspace')
 
    
                

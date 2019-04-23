@@ -23,10 +23,10 @@ T1[60:90,80:128]=np.full([30,48],250,dtype=int)
 T1= (T1*255)//np.max(T1)
 
 
-T2= np.full([128,128],30,dtype=int)
+T2= np.full([128,128],5,dtype=int)
 T2[20:80,0:80]=np.full([60,80],90,dtype=int)
 T2[80:128,50:80]=np.full([48,30],40,dtype=int)
-T2[60:90,80:128]=np.full([30,48],5,dtype=int)
+T2[60:90,80:128]=np.full([30,48],20,dtype=int)
 
 T2= (T2*255)//np.max(T2)
 

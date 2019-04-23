@@ -175,7 +175,7 @@ def createT1(intensity):
         elif intensity == 255: #white matter
             T1= 100
         
-        elif intensity == 200: #muscle
+        elif intensity == 200: #muscle`
             T1=180
         
         elif intensity == 120 : #fat
@@ -197,20 +197,20 @@ def createT1(intensity):
 
 
     
-img = phantom(n=512) 
+PD = phantom(n=512) 
 
-T1 = np.zeros((img.shape[0],img.shape[1]))
-T2= np.zeros((img.shape[0],img.shape[1]))
-
-
-for i in range(img.shape[0]):
-    for j in range(img.shape[1]):
-        T1[i,j]=createT1(img[i,j])
-        T2[i,j]=createT2(img[i,j])
+T1 = np.zeros((PD.shape[0],PD.shape[1]))
+T2= np.zeros((PD.shape[0],PD.shape[1]))
 
 
+for i in range(PD.shape[0]):
+    for j in range(PD.shape[1]):
+        T1[i,j]=createT1(PD[i,j])
+        T2[i,j]=createT2(PD[i,j])
 
-plt.imshow(img, cmap="gray")
+
+
+plt.imshow(PD, cmap="gray")
 plt.show()
 plt.axis('off')
 plt.imshow(T1, cmap="gray")
@@ -222,8 +222,10 @@ plt.show()
 #plt.savefig('sheplagon.png')
 
 
+All=np.concatenate([[PD],[T1],[T2]])
 
 
 
 
 
+np.save("SHEPP-LOGAN", All)
