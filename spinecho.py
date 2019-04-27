@@ -5,7 +5,7 @@ Created on Wed Apr 24 11:17:57 2019
 @author: pc
 """
 
- def spinecho(self):
+ def spinecho(self,TR=1000,TE=200,theta=90):
         
                 self.width
 #                print(phSize)
@@ -17,7 +17,7 @@ Created on Wed Apr 24 11:17:57 2019
                 self.TEline = TE 
                 theta=int(self.ui.flipangle.text())               
 #                print(theta)
-                theta=pi/2
+                theta=(theta*pi)/180
                 r=TE/2
                 Signal=np.zeros((self.height,self.width,3))
                 Signal[0:self.height,0:self.width,0]=np.zeros((self.height,self.width))
@@ -34,7 +34,7 @@ Created on Wed Apr 24 11:17:57 2019
                             Signal[k][m]=np.matmul(RX,Signal[k][m])  #3*1
                             Decay=np.array([[exp(-r/self.T2[k][m]),0,0],[0,exp(-r/self.T2[k][m]),0],[0,0,exp(-r/self.T1[k][m])]]) #3*3
                             Signal[k][m]=np.matmul(Decay,Signal[k][m])  #3*1 
-                            theta=180
+                            theta=2*theta
                             Signal[k][m]=np.matmul(RX,Signal[k][m])  #3*1
                             Decay=np.array([[exp(-r/self.T2[k][m]),0,0],[0,exp(-r/self.T2[k][m]),0],[0,0,exp(-r/self.T1[k][m])]]) #3*3
                             Signal[k][m]=np.matmul(Decay,Signal[k][m])  #3*1 
@@ -58,20 +58,3 @@ Created on Wed Apr 24 11:17:57 2019
                     for k in range(self.height):
                         for m in range (self.width):                    #print(Kspace)
                             Signal[k][m][2]=(1-exp(-TR/self.T1[k][m]))
-                            #kspace finished 
-                
-                
-                # start to constrcted Phantom
-                Phantom=np.fft.fft2(Kspace)
-                Phantom1=abs(Phantom)
-                imsave("phantom.png", Phantom1)
-                Kspace1=abs(Kspace)
-                imsave("Kspace.png", Kspace1)
-                ks = QtGui.QPixmap("Kspace.png")
-                ks=ks.scaled(300,200)
-                pixmap = QtGui.QPixmap("phantom.png")
-                pixmap = pixmap.scaled(300, 200, QtCore.Qt.KeepAspectRatio) 
-                self.ui.constImage.setPixmap(pixmap)
-                self.ui.kspace.setPixmap(ks)
-                QtGui.QApplication.processEvents()
-                print('kspace')
