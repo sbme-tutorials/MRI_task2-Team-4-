@@ -6,7 +6,7 @@ This is a temporary script file.
 """
 
 
-from MRItask2 import Ui_MainWindow
+from EMARAI import Ui_MainWindow
 import sys
 import math
 from math import exp, cos, sin, pi, sqrt
@@ -25,6 +25,9 @@ import scipy.io as sio
 import io
 from time import sleep
 import pyqtgraph as pg
+from matplotlib.mlab import psd
+import sk_dsp_comm.sigsys as ss
+from sk_dsp_comm.sigsys import delta_eps
 #import pyqtgraph.exporters
 
 
@@ -43,6 +46,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.ui.showphantom.setMouseTracking(False)
         self.ui.comboBox.currentIndexChanged.connect(self.choose)
         self.ui.comboBox_2.currentIndexChanged.connect(self.choose_2)
+        self.ui.showGraph.clicked.connect(self.show)
         self.brit = 0
         self.points = QtGui.QPolygon()  #ae al points deh
         self.estna = False
@@ -56,7 +60,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.ui.TE.editingFinished.connect(self.Kspace)
         self.ui.TR.editingFinished.connect(self.Kspace)
         self.ui.flipangle.editingFinished.connect(self.Kspace)
-        self.ui.tabWidget.setCurrentIndex(0)
+        self.ui.tab3.setCurrentIndex(0)
         self.ui.showphantom.installEventFilter(self)
         self.pen=[QtGui.QPen(QtCore.Qt.green),QtGui.QPen(QtCore.Qt.red),QtGui.QPen(QtCore.Qt.yellow),QtGui.QPen(QtCore.Qt.blue)]
         self.Pen1=[pg.mkPen('g'),pg.mkPen('r'),pg.mkPen('y'),pg.mkPen('b')]
@@ -69,9 +73,152 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.point2y=0
         self.point3y=0
         self.point4y=0
-#        
+        
+        ##graphical view
+        
+
 #   
-#        
+    def show(self):
+        if self.ui.t2_2.isChecked() and self.ui.GRE.isChecked():
+            fs = 100 # sampling rate in Hz
+            tau = 1
+            t = np.arange(-5,5,1/fs)
+            x0 = ss.rect(t-1,tau)
+            self.ui.graphicsView.setRange(xRange=[0,10])
+            self.ui.graphicsView.setRange(yRange=[0,9])
+            self.ui.graphicsView.plot(t,x0+6,pen=self.Pen1[0])
+            self.ui.graphicsView.plot(t+1,x0+4,pen=self.Pen1[1])
+            self.ui.graphicsView.plot(t+2,x0+2,pen=self.Pen1[2])
+            fs2 = 100
+            tau2 = .15
+            t2 = np.arange(-5,5,1/fs2)
+            d = ss.rect(t2-1,tau2)
+            self.ui.graphicsView.plot(t2,d+8)
+#        elif self.ui.t2_2.isChecked() and self.ui.ssfp.isChecked():
+#            fs = 100 # sampling rate in Hz
+#            tau = 1
+#            t = np.arange(-5,5,1/fs)
+#            x0 = ss.rect(t-1,tau)
+#            self.ui.graphicsView.setRange(xRange=[0,10])
+#            self.ui.graphicsView.setRange(yRange=[0,9])
+#            self.ui.graphicsView.plot(t,x0+6,pen=self.Pen1[0])
+#            self.ui.graphicsView.plot(t+1,x0+4,pen=self.Pen1[1])
+#            self.ui.graphicsView.plot(t+2,x0+2,pen=self.Pen1[2])
+#            fs2 = 100
+#            tau2 = .15
+#            t2 = np.arange(-5,5,1/fs2)
+#            d = ss.rect(t2-1,tau2)
+#            self.ui.graphicsView.plot(t2,d+8)
+#        elif self.ui.t2_2.isChecked() and self.ui.se.isChecked():
+#            fs = 100 # sampling rate in Hz
+#            tau = 1
+#            t = np.arange(-5,5,1/fs)
+#            x0 = ss.rect(t-1,tau)
+#            self.ui.graphicsView.setRange(xRange=[0,10])
+#            self.ui.graphicsView.setRange(yRange=[0,9])
+#            self.ui.graphicsView.plot(t,x0+6,pen=self.Pen1[0])
+#            self.ui.graphicsView.plot(t+1,x0+4,pen=self.Pen1[1])
+#            self.ui.graphicsView.plot(t+2,x0+2,pen=self.Pen1[2])
+#            fs2 = 100
+#            tau2 = .15
+#            t2 = np.arange(-5,5,1/fs2)
+#            d = ss.rect(t2-1,tau2)
+#            self.ui.graphicsView.plot(t2,d+8)
+#        elif self.ui.tagging.isChecked() and self.ui.GRE.isChecked():
+#            fs = 100 # sampling rate in Hz
+#            tau = 1
+#            t = np.arange(-5,5,1/fs)
+#            x0 = ss.rect(t-1,tau)
+#            self.ui.graphicsView.setRange(xRange=[0,10])
+#            self.ui.graphicsView.setRange(yRange=[0,9])
+#            self.ui.graphicsView.plot(t,x0+6,pen=self.Pen1[0])
+#            self.ui.graphicsView.plot(t+1,x0+4,pen=self.Pen1[1])
+#            self.ui.graphicsView.plot(t+2,x0+2,pen=self.Pen1[2])
+#            fs2 = 100
+#            tau2 = .15
+#            t2 = np.arange(-5,5,1/fs2)
+#            d = ss.rect(t2-1,tau2)
+#            self.ui.graphicsView.plot(t2,d+8)
+#        elif self.ui.tagging.isChecked() and self.ui.ssfp.isChecked():
+#            fs = 100 # sampling rate in Hz
+#            tau = 1
+#            t = np.arange(-5,5,1/fs)
+#            x0 = ss.rect(t-1,tau)
+#            self.ui.graphicsView.setRange(xRange=[0,10])
+#            self.ui.graphicsView.setRange(yRange=[0,9])
+#            self.ui.graphicsView.plot(t,x0+6,pen=self.Pen1[0])
+#            self.ui.graphicsView.plot(t+1,x0+4,pen=self.Pen1[1])
+#            self.ui.graphicsView.plot(t+2,x0+2,pen=self.Pen1[2])
+#            fs2 = 100
+#            tau2 = .15
+#            t2 = np.arange(-5,5,1/fs2)
+#            d = ss.rect(t2-1,tau2)
+#            self.ui.graphicsView.plot(t2,d+8)
+#        elif self.ui.tagging.isChecked() and self.ui.se.isChecked():
+#            fs = 100 # sampling rate in Hz
+#            tau = 1
+#            t = np.arange(-5,5,1/fs)
+#            x0 = ss.rect(t-1,tau)
+#            self.ui.graphicsView.setRange(xRange=[0,10])
+#            self.ui.graphicsView.setRange(yRange=[0,9])
+#            self.ui.graphicsView.plot(t,x0+6,pen=self.Pen1[0])
+#            self.ui.graphicsView.plot(t+1,x0+4,pen=self.Pen1[1])
+#            self.ui.graphicsView.plot(t+2,x0+2,pen=self.Pen1[2])
+#            fs2 = 100
+#            tau2 = .15
+#            t2 = np.arange(-5,5,1/fs2)
+#            d = ss.rect(t2-1,tau2)
+#            self.ui.graphicsView.plot(t2,d+8)
+#        elif self.ui.IR.isChecked() and self.ui.GRE.isChecked():
+#            fs = 100 # sampling rate in Hz
+#            tau = 1
+#            t = np.arange(-5,5,1/fs)
+#            x0 = ss.rect(t-1,tau)
+#            self.ui.graphicsView.setRange(xRange=[0,10])
+#            self.ui.graphicsView.setRange(yRange=[0,9])
+#            self.ui.graphicsView.plot(t,x0+6,pen=self.Pen1[0])
+#            self.ui.graphicsView.plot(t+1,x0+4,pen=self.Pen1[1])
+#            self.ui.graphicsView.plot(t+2,x0+2,pen=self.Pen1[2])
+#            fs2 = 100
+#            tau2 = .15
+#            t2 = np.arange(-5,5,1/fs2)
+#            d = ss.rect(t2-1,tau2)
+#            self.ui.graphicsView.plot(t2,d+8)
+#        elif self.ui.IR.isChecked() and self.ui.ssfp.isChecked():
+#            fs = 100 # sampling rate in Hz
+#            tau = 1
+#            t = np.arange(-5,5,1/fs)
+#            x0 = ss.rect(t-1,tau)
+#            self.ui.graphicsView.setRange(xRange=[0,10])
+#            self.ui.graphicsView.setRange(yRange=[0,9])
+#            self.ui.graphicsView.plot(t,x0+6,pen=self.Pen1[0])
+#            self.ui.graphicsView.plot(t+1,x0+4,pen=self.Pen1[1])
+#            self.ui.graphicsView.plot(t+2,x0+2,pen=self.Pen1[2])
+#            fs2 = 100
+#            tau2 = .15
+#            t2 = np.arange(-5,5,1/fs2)
+#            d = ss.rect(t2-1,tau2)
+#            self.ui.graphicsView.plot(t2,d+8)
+#        elif self.ui.IR.isChecked() and self.ui.se.isChecked():
+#            fs = 100 # sampling rate in Hz
+#            tau = 1
+#            t = np.arange(-5,5,1/fs)
+#            x0 = ss.rect(t-1,tau)
+#            self.ui.graphicsView.setRange(xRange=[0,10])
+#            self.ui.graphicsView.setRange(yRange=[0,9])
+#            self.ui.graphicsView.plot(t,x0+6,pen=self.Pen1[0])
+#            self.ui.graphicsView.plot(t+1,x0+4,pen=self.Pen1[1])
+#            self.ui.graphicsView.plot(t+2,x0+2,pen=self.Pen1[2])
+#            fs2 = 100
+#            tau2 = .15
+#            t2 = np.arange(-5,5,1/fs2)
+#            d = ss.rect(t2-1,tau2)
+#            self.ui.graphicsView.plot(t2,d+8)
+#        else:
+#            return
+        
+        
+        
     def Browse_clicked(self):
        self.fileName,_ = QFileDialog.getOpenFileName(self," "," ", "All Files (*) ;; Python Files (*.jpg)")
        if self.fileName:
@@ -108,6 +255,8 @@ class ApplicationWindow(QtWidgets.QMainWindow):
          
          self.label_height= self.ui.showphantom.geometry().height()      
          self.label_width= self.ui.showphantom.geometry().width()
+         
+         
          
          
          self.estna = True
@@ -227,6 +376,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
             
             self.ui.t1.plot(t ,np.ravel(Mx),pen=self.Pen1[self.counter])
             self.ui.t2.plot(t ,np.ravel(Mz),pen=self.Pen1[self.counter])
+            #self.ui.tab3.plot(t,pen=self)
             
         
 
@@ -341,11 +491,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
                 self.ui.kspace.setPixmap(ks)
                 QtGui.QApplication.processEvents()
                 print('kspace')
-
-   
-               
- 
-
+#           
 def main():
      app = QtWidgets.QApplication(sys.argv)
      application = ApplicationWindow()
